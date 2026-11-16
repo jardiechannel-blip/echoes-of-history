@@ -1,0 +1,37 @@
+
+name: Echoes of History - Episode Audio
+
+on:
+  workflow_dispatch:
+
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Edge TTS
+        run: pip install edge-tts
+
+      - name: Generate full narration
+        run: |
+          mkdir -p output
+          edge-tts \
+            --voice en-GB-RyanNeural \
+            --rate=-5% \
+            --file episode-001.txt \
+            --write-media output/episode-001.mp3 \
+            --write-subtitles output/episode-001.srt
+
+      - name: Upload narration
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode-001-audio
+          path: output/
