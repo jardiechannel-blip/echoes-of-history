@@ -1,0 +1,36 @@
+
+name: Echoes of History - Voice Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Edge TTS
+        run: pip install edge-tts
+
+      - name: Generate British narration
+        run: |
+          mkdir -p output
+          edge-tts \
+            --voice en-GB-RyanNeural \
+            --rate=-5% \
+            --text "In the summer of two hundred and eighteen BC, a Carthaginian general led his army towards the Alps. His name was Hannibal. What followed would become one of the most extraordinary military campaigns in history." \
+            --write-media output/voice-test.mp3
+
+      - name: Upload voice sample
+        uses: actions/upload-artifact@v4
+        with:
+          name: british-voice-test
+          path: output/voice-test.mp3
